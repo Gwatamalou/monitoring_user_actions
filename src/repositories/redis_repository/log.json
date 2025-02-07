@@ -1,0 +1,33 @@
+2025-02-05T20:40:30.567829+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.568328+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.568590+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.568813+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.569052+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.569264+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.569476+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.569787+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.570221+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.570609+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.570983+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.571292+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.571528+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.571758+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.572012+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.572196+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.572352+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.572507+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:40:30.572662+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:40:30.572819+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:45:57.724677+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:45:57.725206+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-05T20:46:16.734566+0600 DEBUG Event: {'user_id': 123, 'event_type': 'click', 'metadata': {'page': 'home'}}
+2025-02-05T20:46:16.735182+0600 DEBUG Event: {'user_id': 456, 'event_type': 'purchase', 'metadata': {'amount': 100}}
+2025-02-06T20:44:29.619003+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:26.864371+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:30.866363+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:33.868328+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:34.869489+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:35.870461+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:45.031391+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:45.032056+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}
+2025-02-06T20:45:45.032328+0600 DEBUG Event: {'user_id': 0, 'event_type': 'string', 'metadata': {}}

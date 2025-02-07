@@ -1,0 +1,21 @@
+[project]
+name = "monitoring-user-actions"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "fastapi[all] (>=0.115.8,<0.116.0)",
+    "redis (>=5.2.1,<6.0.0)",
+    "fakeredis (>=2.26.2,<3.0.0)",
+    "pytest (>=8.3.4,<9.0.0)",
+    "loguru (>=0.7.3,<0.8.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
