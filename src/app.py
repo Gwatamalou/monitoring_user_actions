@@ -1,147 +1,123 @@
-from src.repositories import RedisRepository, RedisCache
-from src.schemas import User
+import uvicorn
+from fastapi import FastAPI, Depends, HTTPException, status
+from .depends import get_redis_services
+from .schemas import User, Event
 
+app = FastAPI()
 
-class RedisServices:
+@app.get("/")
+def read_root():
     """
-    Сервис для работы с Redis репозиторием и кэшем.
-    Предоставляет методы для обработки событий, сохранения и получения данных пользователей,
-    а также работы с кэшем.
+    Корневой эндпоинт для проверки работы API.
+
+    :return: Словарь с сообщением, подтверждающим работу API.
     """
+    return {"message": "Event Processing API работает!"}
 
-    def __init__(self):
-        """
-        Инициализирует сервис, создавая экземпляры репозитория Redis и кэша.
-        """
-        self.repository = RedisRepository()
-        self.cache = RedisCache()
-
+@app.post("/users/{user_id}")
+def create_user(user_id: int,
+                user: User,
+                redis_services=Depends(get_redis_services)):
     """
-    Redis Repository
+    Создает новый профиль пользователя и сохраняет его в кэше Redis.
+
+    :param user_id: Идентификатор пользователя.
+    :param user: Данные пользователя (имя, возраст, город).
+    :param redis_services: Сервис Redis для взаимодействия с кэшем.
+    :return: None
     """
+    redis_services.save_user_profile(user_id=user_id,
+                                     name=user.name,
+                                     age=user.age,
+                                     city=user.city)
 
-    def log_event(self, user_id: int, event_type: str, metadata: dict):
-        """
-        Записывает событие в очередь событий.
-
-        :param user_id: Идентификатор пользователя, с которым связано событие.
-        :param event_type: Тип события.
-        :param metadata: Дополнительные данные события.
-        """
-        self.repository.log_event(user_id=user_id, event_type=event_type, metadata=metadata)
-
-    def save_user_profile(self, user_id: int, name: str, age: int, city: str):
-        """
-        Сохраняет профиль пользователя в Redis и инвалидирует его кэш.
-
-        :param user_id: Идентификатор пользователя.
-        :param name: Имя пользователя.
-        :param age: Возраст пользователя.
-        :param city: Город пользователя.
-        """
-        self.repository.save_user_profile(user_id=user_id, name=name, age=age, city=city)
-        self.cache.invalidate_cache(user_id=user_id)
-
-    def track_unique_user(self, user_id: int):
-        """
-        Добавляет пользователя в множество уникальных пользователей.
-
-        :param user_id: Идентификатор пользователя.
-        """
-        self.repository.track_unique_user(user_id=user_id)
-
-    def update_user_activity(self, user_id: int):
-        """
-        Обновляет активность пользователя в Redis.
-
-        :param user_id: Идентификатор пользователя.
-        """
-        self.repository.update_user_activity(user_id=user_id)
-
-    def get_user_profile(self, user_id):
-        """
-        Получает профиль пользователя из Redis.
-
-        :param user_id: Идентификатор пользователя.
-        :return: Данные профиля пользователя.
-        """
-        return self.repository.get_user_profile(user_id=user_id)
-
-    def increment_statistics_bulk(self, event_type: str, user_id: int):
-        """
-        Увеличивает статистику для нескольких событий.
-
-        :param event_type: Тип события.
-        :param user_id: Идентификатор пользователя.
-        """
-        events = [{
-            "event_type": event_type,
-            "user_id": user_id
-        }]
-        self.repository.increment_statistics_bulk(events=events)
-
-    def increment_event_count(self, event_type: str):
-        """
-        Увеличивает счетчик для конкретного типа события.
-
-        :param event_type: Тип события.
-        """
-        self.repository.increment_event_count(event_type=event_type)
-
-    def get_event_count(self, event_type: str):
-        """
-        Получает количество событий для конкретного типа.
-
-        :param event_type: Тип события.
-        :return: Количество событий данного типа.
-        """
-        return self.repository.get_event_count(event_type=event_type)
-
-    def increment_user_activity(self, user_id: int):
-        """
-        Увеличивает активность пользователя на 1.
-
-        :param user_id: Идентификатор пользователя.
-        """
-        self.repository.increment_user_activity(user_id=user_id)
-
-    def get_user_activity(self, user_id: int):
-        """
-        Получает уровень активности пользователя.
-
-        :param user_id: Идентификатор пользователя.
-        :return: Уровень активности пользователя.
-        """
-        return self.repository.get_user_activity(user_id=user_id)
-
-    def get_redis_stats(self):
-        """
-        Получает статистику Redis, такую как количество подключений, использованную память и другие параметры.
-
-        :return: Статистика Redis.
-        """
-        return self.repository.get_redis_stats()
-
+@app.get("/user/{user_id}")
+def get_user(user_id: int,
+             redis_services=Depends(get_redis_services)):
     """
-    Redis Cache
+    Получает профиль пользователя из кэша или Redis.
+
+    :param user_id: Идентификатор пользователя.
+    :param redis_services: Сервис Redis для взаимодействия с кэшем.
+    :return: Словарь с данными пользователя и источником данных.
+    :raise HTTPException: Если профиль пользователя не найден, генерируется ошибка 404.
     """
+    cached_profile = redis_services.get_cache_user_profile(user_id)
+    print(f"CACHE {cached_profile}")
+    if cached_profile:
+        return {"source": "cache", "data": cached_profile}
 
-    def cache_user_profile(self, user_id: int, profile_data: dict, expire_time: int = 300):
-        """
-        Кэширует профиль пользователя в Redis с указанным временем жизни.
+    user_data = redis_services.get_user_profile(user_id)
+    print(f"USER_DATA {user_data}")
+    if user_data:
+        return {"source": "set", "data": user_data}
 
-        :param user_id: Идентификатор пользователя.
-        :param profile_data: Данные профиля пользователя в виде словаря.
-        :param expire_time: Время жизни кэша в секундах (по умолчанию 300 секунд).
-        """
-        self.cache.cache_user_profile(user_id=user_id, profile_data=profile_data, expire_time=expire_time)
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                         detail="Пользователь не найден")
 
-    def get_cache_user_profile(self, user_id: int) -> User:
-        """
-        Получает профиль пользователя из кэша Redis.
+@app.post("/events")
+def send_event(event: Event,
+               redis_services=Depends(get_redis_services)):
+    """
+    Логирует событие в очередь Redis и обновляет статистику по событиям.
 
-        :param user_id: Идентификатор пользователя.
-        :return: Данные профиля пользователя из кэша.
-        """
-        cached_profile = self.cache.get_cache_user_profile(user_id=user_id)
-        return cached_profile
+    :param event: Данные о событии (пользователь, тип события, метаданные).
+    :param redis_services: Сервис Redis для взаимодействия с кэшем.
+    :return: Сообщение, подтверждающее добавление события в очередь.
+    """
+    redis_services.log_event(user_id=event.user_id,
+                             event_type=event.event_type,
+                             metadata=event.metadata)
+    redis_services.increment_event_count(event_type=event.event_type)
+    redis_services.increment_user_activity(user_id=event.user_id)
+
+    return {"message": "Событие добавлено в очередь"}
+
+@app.get("/statistics/events/{event_type}")
+def get_event_statistics(event_type: str,
+                         redis_services=Depends(get_redis_services)):
+    """
+    Получает статистику по конкретному типу события.
+
+    :param event_type: Тип события для получения статистики.
+    :param redis_services: Сервис Redis для взаимодействия с кэшем.
+    :return: Словарь с типом события и количеством.
+    :raise HTTPException: Если статистика по событию не найдена, генерируется ошибка 404.
+    """
+    count = redis_services.get_event_count(event_type=event_type)
+    if count:
+        return {"event_type": event_type, "count": count}
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                         detail=f"Тип события не найден: {event_type}")
+
+@app.get("/statistics/user/{user_id}")
+def get_user_statistics(user_id: int,
+                        redis_services=Depends(get_redis_services)):
+    """
+    Получает статистику активности конкретного пользователя.
+
+    :param user_id: Идентификатор пользователя для получения статистики.
+    :param redis_services: Сервис Redis для взаимодействия с кэшем.
+    :return: Словарь с идентификатором пользователя и его активностью.
+    :raise HTTPException: Если статистика активности пользователя не найдена, генерируется ошибка 404.
+    """
+    count = redis_services.get_user_activity(user_id=user_id)
+    if count:
+        return {"user_id": user_id, "activity_score": count}
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                         detail=f"Активность для пользователя не найдена: {user_id}")
+
+@app.get("/monitoring")
+def get_monitoring_data(redis_services=Depends(get_redis_services)):
+    """
+    Получает данные мониторинга для Redis.
+
+    :param redis_services: Сервис Redis для получения статистики.
+    :return: Словарь с данными мониторинга Redis.
+    """
+    return redis_services.get_redis_stats()
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

@@ -1,5 +1,5 @@
-from db import db_redis
-from services import RedisServices
+from .db import db_redis
+from .services import RedisServices
 
 def get_redis_client():
     return db_redis.get_client()

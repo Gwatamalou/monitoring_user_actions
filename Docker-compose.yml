@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    container_name: monitor
+    ports:
+      - "8000:80"
+    depends_on:
+      - redis
+    networks:
+      - monitor-network
+
+  redis:
+    image: redis:7.4
+    container_name: redis_monitor
+    ports:
+      - "6379:6379"
+    networks:
+      - monitor-network
+
+networks:
+  monitor-network:
+    driver: bridge
